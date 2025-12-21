@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, Truck } from 'lucide-react';
 
 export default function Home() {
@@ -35,7 +36,10 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="mt-16 text-sm text-gray-500">
+      <div className="mt-16 text-sm text-gray-500 flex flex-col items-center gap-4">
+        <div className="relative h-8 w-32 opacity-75">
+          <Image src="/logo-dark.png" alt="Vallaroo" fill className="object-contain" />
+        </div>
         © {new Date().getFullYear()} Vallaroo Delivery
       </div>
     </div>
