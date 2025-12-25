@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { parseError } from '@/lib/utils';
 
 export default function SignupPage() {
     const [email, setEmail] = useState('');
@@ -20,6 +21,13 @@ export default function SignupPage() {
         e.preventDefault();
         setLoading(true);
 
+        const phonePattern = /^(?:\+91|91|0)?[6-9]\d{9}$/;
+        if (!phonePattern.test(phone)) {
+            toast.error('Please enter a valid 10-digit mobile number.');
+            setLoading(false);
+            return;
+        }
+
         try {
             const { data, error } = await supabase.auth.signUp({
                 email,
@@ -33,7 +41,7 @@ export default function SignupPage() {
             });
 
             if (error) {
-                toast.error(error.message);
+                toast.error(parseError(error.message));
                 return;
             }
 
@@ -55,7 +63,7 @@ export default function SignupPage() {
                 router.push('/login');
             }
         } catch (error) {
-            toast.error('Something went wrong');
+            toast.error(parseError(error));
         } finally {
             setLoading(false);
         }
@@ -73,7 +81,7 @@ export default function SignupPage() {
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
                     <form className="space-y-6" onSubmit={handleSignup}>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Full Name</label>
+                            <label className="block text-sm font-medium text-gray-700">Full Name <span className="text-red-600">*</span></label>
                             <div className="mt-1">
                                 <input
                                     type="text"
@@ -86,7 +94,7 @@ export default function SignupPage() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Phone</label>
+                            <label className="block text-sm font-medium text-gray-700">Phone <span className="text-red-600">*</span></label>
                             <div className="mt-1">
                                 <input
                                     type="tel"
@@ -99,7 +107,7 @@ export default function SignupPage() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Email address</label>
+                            <label className="block text-sm font-medium text-gray-700">Email address <span className="text-red-600">*</span></label>
                             <div className="mt-1">
                                 <input
                                     type="email"
@@ -112,7 +120,7 @@ export default function SignupPage() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Password</label>
+                            <label className="block text-sm font-medium text-gray-700">Password <span className="text-red-600">*</span></label>
                             <div className="mt-1">
                                 <input
                                     type="password"
